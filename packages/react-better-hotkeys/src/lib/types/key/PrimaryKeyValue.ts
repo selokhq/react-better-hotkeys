@@ -40,7 +40,6 @@ export type PrimaryKeyValue =
   | "KeyEqual"
   | "KeyBackquote"
   | "KeyBackslash"
-  | "KeyBackspace"
   | "KeyBracketLeft"
   | "KeyBracketRight"
   | "KeyPeriod"

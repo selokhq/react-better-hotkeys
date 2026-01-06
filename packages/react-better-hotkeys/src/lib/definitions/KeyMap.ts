@@ -524,10 +524,6 @@ export const KeyMap: Record<PrimaryKeyCode, KeyDescription<"code">> &
     on: "key",
     value: "\\",
   },
-  KeyBackspace: {
-    on: "key",
-    value: "Backspace",
-  },
   KeyBracketLeft: {
     on: "key",
     value: "[",
