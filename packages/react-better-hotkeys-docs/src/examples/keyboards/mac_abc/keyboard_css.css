@@ -1,0 +1,32 @@
+.keytop {
+  border-width: 0px !important;
+}
+
+.keyborder {
+  border-style: solid;
+}
+
+.keylabel1 {
+  color: blue !important;
+}
+
+.keylabel4 {
+  color: green !important;
+}
+
+.keylabel7 {
+  position: absolute !important;
+  bottom: 0px !important;
+}
+
+.keylabels {
+  padding-bottom: 0px !important;
+}
+
+.textsize1 {
+  font-size: 7px !important;
+}
+
+.keylabel {
+  font-family: "Helvetica Neue";
+}

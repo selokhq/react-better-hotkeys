@@ -1,0 +1,14 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "../eslint-config"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
+}

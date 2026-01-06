@@ -1,0 +1,15 @@
+{
+  "extends": "@repo/typescript-config/tsconfig.app.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "types": ["vite/client"],
+    "rootDir": ".",
+    "outDir": "./dist",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "jsx": "react-jsx"
+  },
+  "include": ["src"],
+  "exclude": ["src/test"]
+}

@@ -1,0 +1,66 @@
+---
+sidebar_position: 3
+---
+
+import CodeBlock from '@theme/CodeBlock'
+import basicCode from '!!raw-loader!@site/docs/assets/code/use-hotkey/basic'
+import basicExampleCode from '!!raw-loader!@site/docs/assets/code/use-hotkey/live-examples/basic'
+import dependenciesExampleCode from '!!raw-loader!@site/docs/assets/code/use-hotkey/live-examples/dependencies'
+import optionsExampleCode from '!!raw-loader!@site/docs/assets/code/use-hotkey/live-examples/options'
+import { removeImports } from '@site/src/utils/removeImports'
+import {LiveEditor} from "@site/src/components/LiveEditor"
+import { removeTsComments } from '@site/src/utils/removeTsComments'
+
+# useHotkey
+
+Use `useHotkey` to implement hotkeys easily and enhance keyboard based control in your web apps.
+
+<CodeBlock className="language-tsx">{removeTsComments(basicCode)}</CodeBlock>
+
+## Arguments
+
+### `keys`
+
+```ts
+hotkey: HotKeyDefChordBase | HotKeyDefSequenceBase
+```
+
+The hotkey that is being listened on. Use the `Hotkey` object to create your hotkey.
+
+### `callback`
+
+```ts
+callback: HotkeyCallback
+```
+
+The function getting called if the defined hotkey was pressed.
+
+### `dependencies`
+
+```ts
+dependencies?: unknown[]
+```
+
+An optional array to only refresh the hotkey internally if needed.
+
+### `options`
+
+```ts
+options?: Partial<HotkeyOptions>
+```
+
+Optional options to shape the behaviour of the hotkey. [More](/types/HotkeyOptions) on `HotkeyOptions`
+
+## Examples
+
+### Basic usage 
+
+<LiveEditor code={basicExampleCode} />
+
+### With dependencies 
+
+<LiveEditor code={dependenciesExampleCode} />
+
+### With options 
+
+<LiveEditor code={optionsExampleCode} />

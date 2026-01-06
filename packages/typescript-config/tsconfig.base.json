@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "moduleDetection": "force",
+    "strict": true,
+    "strictNullChecks": true,
+    "declarationMap": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "noEmit": true,
+    "composite": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "useDefineForClassFields": true
+  }
+}

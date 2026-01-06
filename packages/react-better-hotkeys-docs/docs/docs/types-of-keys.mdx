@@ -1,0 +1,72 @@
+---
+sidebar_position: 1
+---
+
+import CodeBlock from '@theme/CodeBlock'
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import code_vs_value from '!!raw-loader!@site/docs/assets/code/types-of-keys/code_vs_value'
+
+# Types of Keys
+
+There are two types of keys:
+- Primary Keys
+- Modifier Keys
+
+## Modifier Keys
+
+Modifier keys are keys that do not perform an action by themselves, but change the meaning of other keys when held down.
+
+`Meta`, `Alt`, 
+`Control` and `Shift` are all the supported modifier keys.
+
+### Windows vs. macOS
+
+`Control` is the most used modifier key on Windows, but `control` on macOS is less commonly used. Instead `Command` aka. `Meta` is the main modifier on macOS. 
+
+Because most hotkeys will use the primary modifier on both systems there is the `Mod` key in *React Better Hotkeyss* which resolves to `Meta` on macOS and `Control` on every other system.
+
+:::tip
+Use `Mod` instead of `Meta` or `Control` if possible to remain consistent across operating systems
+:::
+
+## Primary Keys
+
+All keys, which are no modifier keys, are primary keys.
+
+Additionally, some primary keys can be referenced by *KeyCode* or *KeyValue*.
+To take some confusion out of defining hotkeys the possible keys are named after a pattern. 
+
+All keys which names start with `Key`, like `KeyK`, are the *KeyValue*-variant of this specific key. All `Key...`-keys have also a *KeyCode*-variant named exactly the same just without the prefix `Key`.
+
+<CodeBlock className="language-tsx">{code_vs_value}</CodeBlock>
+
+## Keyboard layouts
+
+Below are some examples of keyboard layouts. Each key is labelled with its <span style={{ color: 'blue' }}>`key code`</span> and, if available, its <span style={{ color: 'green' }}>`key value`</span>. 
+
+By looking at the different layouts you can see how problems can emerge when using key values in hotkeys. Of course, sometimes you need or want the key value but if possible use the corresponding key code for a more stable experience.
+
+<Tabs
+  defaultValue="macos_abc"
+  values={[
+    {label: 'MacOS US', value: 'macos_abc'},
+    {label: 'MacOS DE', value: 'macos_de'},
+  ]}>
+  <TabItem value="macos_abc">
+    <embed
+        src="/react-better-hotkeys/img/macos_abc.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH"
+        type="application/pdf"
+        width="100%"
+        style={{aspectRatio:7/3}}
+    />  
+  </TabItem>
+  <TabItem value="macos_de">
+    <embed
+        src="/react-better-hotkeys/img/macos_de.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH"
+        type="application/pdf"
+        width="100%"
+        style={{aspectRatio:7/3}}
+    />  
+  </TabItem>
+</Tabs>

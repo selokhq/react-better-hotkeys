@@ -1,0 +1,40 @@
+{
+  "name": "react-better-hotkeys",
+  "version": "0.1.0",
+  "private": true,
+  "description": "React hook for handling keyboard shortcuts",
+  "author": "Christopher Haindl",
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "hook",
+    "hooks",
+    "component",
+    "hotkey",
+    "shortcut",
+    "keyboard",
+    "shortcuts",
+    "keypress",
+    "hotkeys"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/selokhq/react-better-hotkeys.git"
+  },
+  "scripts": {
+    "lint": "npm -ws run lint --if-present",
+    "compile": "npm -ws run compile --if-present",
+    "version:patch": "npm version patch --workspace react-better-hotkeys --workspace react-better-hotkeys-docs --include-workspace-root",
+    "version:minor": "npm version minor --workspace react-better-hotkeys --workspace react-better-hotkeys-docs --include-workspace-root",
+    "version:major": "npm version major --workspace react-better-hotkeys --workspace react-better-hotkeys-docs --include-workspace-root"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@release-it-plugins/workspaces": "^5.0.3",
+    "@release-it/bumper": "^7.0.5",
+    "jiti": "^2.6.1",
+    "release-it": "^19.2.2"
+  }
+}

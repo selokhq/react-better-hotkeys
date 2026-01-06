@@ -1,0 +1,53 @@
+---
+sidebar_position: 2
+---
+
+import CodeBlock from '@theme/CodeBlock'
+import hotkey_types from '!!raw-loader!@site/docs/assets/code/defining-hotkeys/hotkey_types'
+import hotkey_chord from '!!raw-loader!@site/docs/assets/code/defining-hotkeys/hotkey_chord'
+import hotkey_sequence from '!!raw-loader!@site/docs/assets/code/defining-hotkeys/hotkey_sequence'
+
+# Defining Hotkeys
+
+To intuitively make your hotkeys as resistant to different keyboard layouts as possible many keys are unsupported due to them missing in many common layouts.
+As a baseline the `US ANSI 104` layout was used. Only some special keys (*Print Screen*, *Scroll Lock* and *Pause*) from this layout are excluded due to inconsistent keyboard events in the browser.
+
+## The Hotkey Object
+
+To further simplify the process of defining hotkeys the `Hotkey` object is a fully typed helper ensuring you only define hotkeys which are valid.
+
+There are two types of hotkeys, `sequential` and `chordal`. Each types has its own set of rules it has to follow. With the `Hotkey` object you start by defining which type of hotkey you are going to create.
+
+<CodeBlock className="language-tsx">{hotkey_types}</CodeBlock>
+
+## Chord-Hotkeys
+
+A *Chord-Hotkey* consists of one primary key and zero or more modifier keys that are getting pressed together at the same time. 
+
+:::info Key-combinations like `Ctrl+A+B` are not possible
+This is to prevent unexpected behaviour caused by lagging or the browser loosing focus and not receiving any `keyup`-events
+:::
+
+The `Hotkey` object guides you through the creation of the hotkey by allowing only unused modifiers before a primary key.
+
+You can use as many modifier keys as you wish, but you can use each one only once per *Chord-Hotkey*. After specifying the primary key for the *Chord-Hotkey* the definition is completed and no additional keys can be added.
+
+<CodeBlock className="language-tsx">{hotkey_chord}</CodeBlock>
+
+:::warning Using `Key Values` can result in unexpected behaviour
+When combining `Key Values` with `AlrGr` or `Ctrl+Alt` on Windows or `option` on macOS unexpected behaviour can occur. Due to browser limitation only the produced symbol of a KeyboardEvent can be obtained. Therefore key combination resulting in special characters cannot be resolved correctly.
+
+(e.g.: `option+K` on macOS produces `∆` therefore `Hotkey.Chord.Alt.KeyK` will not work on macOS)
+:::
+
+
+## Sequence-Hotkeys
+
+A *Sequence-Hotkey* consists of one or more primary keys and no modifier keys that are getting pressed after each other in a specific order. 
+
+You can use each primary key as often as you like. To complete the definition you have to mark the sequence as ended by accessing the property `end`
+
+:::warning Do not confuse `end` with the key `End`
+:::
+
+<CodeBlock className="language-tsx">{hotkey_sequence}</CodeBlock>

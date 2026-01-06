@@ -1,0 +1,14 @@
+{
+  "extends": "@repo/typescript-config/tsconfig.app.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "types": ["vite/client"],
+    "rootDir": ".",
+    "outDir": "./dist",
+    "paths": {
+      "@site/*": ["./*"]
+    },
+    "jsx": "react-jsx"
+  },
+  "exclude": [".docusaurus", "build"]
+}
