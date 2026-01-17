@@ -4,7 +4,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 import generateDocsPlugin from "./src/plugins/generate-docs";
 
 const config: Config = {
-  title: "React Better Hotkeyss",
+  title: "React Better Hotkeys",
   tagline: "Effortless, accessible keyboard shortcuts for React",
   favicon: "img/favicon.ico",
 
@@ -54,7 +54,7 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: "React Better Hotkeyss",
+      title: "React Better Hotkeys",
       // logo: {
       //   alt: "Logo",
       //   src: "img/logo.svg",
