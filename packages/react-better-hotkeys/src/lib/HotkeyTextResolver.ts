@@ -123,11 +123,11 @@ export class HotkeyTextResolver {
     }
 
     const internalCode = entry[0] as PrimaryKeyCode;
-
-    if (this.symbolMap[internalCode] === symbol) return;
-
-    this.symbolMap[internalCode] =
+    const casedSymbol =
       symbol.length === 1 ? symbol.toLocaleUpperCase() : symbol;
+
+    if (this.symbolMap[internalCode] === casedSymbol) return;
+    this.symbolMap[internalCode] = casedSymbol;
 
     const entryWithSameSymbol = Object.entries(this.symbolMap).find(
       ([c, v]) => c !== internalCode && v === this.symbolMap[internalCode],
