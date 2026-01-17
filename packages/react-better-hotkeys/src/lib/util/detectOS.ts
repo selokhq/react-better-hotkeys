@@ -1,10 +1,4 @@
-export type OS =
-  | "iOS/iPadOS"
-  | "Android"
-  | "Windows"
-  | "macOS"
-  | "Linux"
-  | "Unknown";
+import type { OS } from "../types/other/OS";
 
 let cachedOS: OS | null = null;
 
