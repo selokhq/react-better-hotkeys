@@ -1,4 +1,5 @@
 import { KeyMap } from "./definitions/KeyMap";
+import type { HotkeyTextResolver } from "./HotkeyTextResolver";
 import type { IncompleteHotkey } from "./types/hotkey/chord/IncompleteChordHotkey";
 import type { HotKeyChordDef } from "./types/hotkey/HotKeyChordDef";
 import type { HotKeySequenceDef } from "./types/hotkey/HotKeySequenceDef";
@@ -6,6 +7,7 @@ import type { SequenceTree } from "./types/hotkey/sequence/SequenceTree";
 import type { KeyDescription } from "./types/key/KeyDescription";
 import type { KeyValueType } from "./types/key/KeyValueType";
 import { checkModifierPressed } from "./util/checkModifierPressed";
+import { isClearKeydown } from "./util/isCleanKeydown";
 import { isEditingKeystrokeContext } from "./util/isEditable";
 import { isModifierKeyboardEvent } from "./util/isModifierKeyboardEvent";
 import { wrongModifierPressed } from "./util/wrongModifierPressed";
@@ -27,9 +29,16 @@ export class HotkeyRegistry {
 
   waitingSequenceNodes: Record<number, SequenceTree> = {};
 
-  constructor(sequenceTimeout?: number, chordTimeout?: number) {
+  textResolver?: HotkeyTextResolver;
+
+  constructor(
+    sequenceTimeout?: number,
+    chordTimeout?: number,
+    textResolver?: HotkeyTextResolver,
+  ) {
     this.sequenceTimeout = sequenceTimeout ?? 400;
     this.chordTimeout = chordTimeout ?? 100;
+    this.textResolver = textResolver;
   }
 
   public addChordHotkey(hotkey: HotKeyChordDef) {
@@ -187,6 +196,8 @@ export class HotkeyRegistry {
     if (isModifierKeyboardEvent(event)) {
       this.handleModifierKeydown(event);
       return;
+    } else if (isClearKeydown(event)) {
+      this.textResolver?.setSymbol(event.code, event.key);
     }
     this.clearIncompleteChords();
 

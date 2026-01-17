@@ -45,5 +45,4 @@ export type PrimaryKeyValue =
   | "KeyPeriod"
   | "KeyQuote"
   | "KeySemicolon"
-  | "KeySlash"
-  | "KeySpace";
+  | "KeySlash";

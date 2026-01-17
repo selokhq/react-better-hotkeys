@@ -1,19 +1,42 @@
 import type { PropsWithChildren } from "react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import type { HotkeyContextProps } from "./HotkeyContext";
 import { HotkeyContext } from "./HotkeyContext";
 import { HotkeyRegistry } from "../HotkeyRegistry";
 import type { HotkeyProviderProps } from "../types/hotkey/provider/HotkeyProviderProps";
+import { HotkeyTextResolver } from "../HotkeyTextResolver";
 
 export function HotkeyProvider({
   children,
   sequenceTimeout,
+  chordTimeout,
+  sequenceDelimiter,
+  chordDelimiter,
+  customSymbolMap,
 }: PropsWithChildren<HotkeyProviderProps>) {
-  const [registry] = useState(new HotkeyRegistry(sequenceTimeout));
+  const parentContext = useContext(HotkeyContext);
+
+  const [state] = useState<HotkeyContextProps>(() => {
+    const textResolver =
+      parentContext?.textResolver ??
+      new HotkeyTextResolver(
+        customSymbolMap,
+        chordDelimiter,
+        sequenceDelimiter,
+      );
+    const registry = new HotkeyRegistry(
+      sequenceTimeout,
+      chordTimeout,
+      textResolver,
+    );
+    return { registry: registry, textResolver: textResolver };
+  });
 
   useEffect(() => {
     const handleKeydown = (event: KeyboardEvent) =>
-      registry.handleKeydown(event);
-    const handleKeyup = (event: KeyboardEvent) => registry.handleKeyup(event);
+      state.registry.handleKeydown(event);
+    const handleKeyup = (event: KeyboardEvent) =>
+      state.registry.handleKeyup(event);
     addEventListener("keydown", handleKeydown);
     addEventListener("keyup", handleKeyup);
 
@@ -21,11 +44,9 @@ export function HotkeyProvider({
       removeEventListener("keydown", handleKeydown);
       removeEventListener("keyup", handleKeyup);
     };
-  }, [registry, registry.handleKeydown, registry.handleKeyup]);
+  }, [state.registry]);
 
   return (
-    <HotkeyContext.Provider value={{ registry: registry }}>
-      {children}
-    </HotkeyContext.Provider>
+    <HotkeyContext.Provider value={state}>{children}</HotkeyContext.Provider>
   );
 }

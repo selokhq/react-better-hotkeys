@@ -4,8 +4,19 @@ import type { HotKeyChordDef } from "../types/hotkey/HotKeyChordDef";
 import type { HotKeySequenceDef } from "../types/hotkey/HotKeySequenceDef";
 import type { HotkeyCallback } from "../types/hotkey/HotkeyCallback";
 import type { HotkeyOptions } from "../types/hotkey/HotkeyOptions";
-import { useContext, useEffect, useId, useLayoutEffect, useMemo } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useMemo,
+} from "react";
 import { HotkeyContext } from "../context/HotkeyContext";
+import { KeyMap } from "../definitions/KeyMap";
+import type { PrimaryKey } from "../types/key/PrimaryKey";
+import { isPrimaryKeyCode } from "../util/isPrimaryKeyCode";
+import type { ResolvedKeyStatus } from "../types/hotkey/renderer/ResolvedKeyStatus";
 
 type ChordIn = HotKeyDefChordBase;
 type SequenceIn = HotKeyDefSequenceBase;
@@ -62,38 +73,79 @@ export function useHotkey<const T extends readonly (ChordIn | SequenceIn)[]>(
     [options],
   );
 
+  const resolveKey = useCallback(
+    (k: PrimaryKey): [string, ResolvedKeyStatus] => {
+      return isPrimaryKeyCode(k)
+        ? (hotkeyContext?.textResolver.resolve(k) ?? [
+            KeyMap[`Key${k}` as PrimaryKey].value,
+            "unknown",
+          ])
+        : [KeyMap[k].value, "unknown"];
+    },
+    [hotkeyContext?.textResolver],
+  );
+
+  const createSequenceOut = useCallback(
+    (hk: SequenceIn, index?: number) => {
+      const hotkey: SequenceOut = {
+        ...hk,
+        options: _options,
+        id: index == null ? id : `${id}-${index}`,
+        callback,
+        toParts: () => [
+          hk.keys.map((k) => {
+            return resolveKey(k);
+          }),
+          hotkeyContext?.textResolver.delimiterForType(hk.type) ?? "",
+        ],
+        toString: () => {
+          return hotkeyContext?.textResolver.toString(hotkey) ?? "";
+        },
+      };
+      return hotkey;
+    },
+    [_options, callback, hotkeyContext?.textResolver, id, resolveKey],
+  );
+
+  const createChordOut = useCallback(
+    (hk: ChordIn, index?: number) => {
+      const hotkey: ChordOut = {
+        ...hk,
+        options: _options,
+        id: index == null ? id : `${id}-${index}`,
+        callback,
+        toParts: () => [
+          [
+            ...Object.entries(hk.modifier)
+              .filter((e) => e[1])
+              .map((e) => [e[0], "valid"] as [string, ResolvedKeyStatus]),
+            resolveKey(hk.keyId),
+          ],
+          hotkeyContext?.textResolver.delimiterForType(hk.type) ?? "",
+        ],
+        toString: () => {
+          return hotkeyContext?.textResolver.toString(hotkey) ?? "";
+        },
+      };
+      return hotkey;
+    },
+    [_options, callback, hotkeyContext?.textResolver, id, resolveKey],
+  );
+
   const entries = useMemo<HotkeyMapping<T> | ChordOut | SequenceOut>(() => {
     if (isHotkeyArray(hotkey)) {
-      return hotkey.map((hk, i) =>
-        hk.type === "chord"
-          ? ({
-              ...hk,
-              options: _options,
-              id: `${id}-${i}`,
-              callback,
-              toParts: () => [[], ""],
-              toString: () => "",
-            } satisfies ChordOut)
-          : ({
-              ...hk,
-              options: _options,
-              id: `${id}-${i}`,
-              callback,
-              toParts: () => [[], ""],
-              toString: () => "",
-            } satisfies SequenceOut),
-      ) as HotkeyMapping<typeof hotkey>;
+      return hotkey.map((hk, i) => {
+        if (hk.type === "chord") {
+          return createChordOut(hk, i);
+        } else {
+          return createSequenceOut(hk, i);
+        }
+      }) as HotkeyMapping<typeof hotkey>;
     } else {
-      return {
-        ...hotkey,
-        options: _options,
-        id: id,
-        callback,
-        toParts: () => [[], ""],
-        toString: () => "",
-      };
+      if (hotkey.type === "chord") return createChordOut(hotkey);
+      return createSequenceOut(hotkey);
     }
-  }, [_options, callback, hotkey, id]); // TODO: this will trigger on every render, right?
+  }, [createChordOut, createSequenceOut, hotkey]); // TODO: this will trigger on every render, right?
 
   useSafeLayoutEffect(() => {
     if (hotkeyContext == null) {

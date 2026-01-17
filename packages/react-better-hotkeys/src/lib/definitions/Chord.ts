@@ -7,6 +7,7 @@ import type { ModifierKeyCode } from "../types/key/ModifierKeyCode";
 import type { PrimaryKeyCode } from "../types/key/PrimaryKeyCode";
 import type { PrimaryKeyValue } from "../types/key/PrimaryKeyValue";
 import type { HotKeyDefChordBase } from "../types/hotkey/HotKeyDefChordBase";
+import type { PrimaryKey } from "../types/key/PrimaryKey";
 
 export const createHotkeyChordBuilder = (
   mods: ModifierKeyCode[],
@@ -17,13 +18,14 @@ export const createHotkeyChordBuilder = (
       get(_t, prop) {
         if (typeof prop !== "string") return undefined;
         if (ALL_MODIFIER_KEY_CODES.indexOf(prop as ModifierKeyCode) === -1) {
-          const info = KeyMap[prop as PrimaryKeyCode | PrimaryKeyValue];
+          const keyId = prop as PrimaryKey;
+          const info = KeyMap[keyId];
 
           const modifier: Record<Exclude<ModifierKeyCode, "Mod">, boolean> = {
-            Meta: false,
+            Shift: false,
             Alt: false,
             Control: false,
-            Shift: false,
+            Meta: false,
           };
 
           mods.forEach((m) => {
@@ -35,6 +37,7 @@ export const createHotkeyChordBuilder = (
           const def: HotKeyDefChordBase = {
             type: "chord",
             modifier: modifier,
+            keyId: keyId,
             resolve: info.on,
             primaryValue: info.value,
           };

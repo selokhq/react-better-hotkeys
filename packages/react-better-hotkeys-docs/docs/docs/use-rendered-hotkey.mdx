@@ -1,0 +1,34 @@
+---
+sidebar_position: 3
+---
+
+import CodeBlock from '@theme/CodeBlock'
+import basicCode from '!!raw-loader!@site/docs/assets/code/use-rendered-hotkey/basic'
+import layoutsExampleCode from '!!raw-loader!@site/docs/assets/code/use-rendered-hotkey/live-examples/layouts'
+import { removeImports } from '@site/src/utils/removeImports'
+import {LiveEditor} from "@site/src/components/LiveEditor"
+import { removeTsComments } from '@site/src/utils/removeTsComments'
+
+# useRenderedHotkey
+
+Use `useRenderedHotkey` to show your defined hotkeys visually in your application with as much accuracy to the users keyboard layout as technically possible.
+
+<CodeBlock className="language-tsx">{removeTsComments(basicCode)}</CodeBlock>
+
+## Arguments
+
+### `hotkey`
+
+```ts
+hotkey: HotKeyDef
+```
+
+The hotkey that should be rendered.
+
+## Examples
+
+### Different keyboard layouts
+
+In this example you can rebind key codes to different keys, as they would be on other keyboard layouts. To sync the key codes with the actual keyboard layout each keycode must be pressed at least once without modifier keys pressed to receive the produced key. Because of browser limitation this is the most stable way to display hotkeys as they appear on the users keyboard. The internal key mapping is cached in localStorage to avoid having the user press each key again for each visit
+
+<LiveEditor code={layoutsExampleCode} />

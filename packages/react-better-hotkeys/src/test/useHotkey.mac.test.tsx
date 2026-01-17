@@ -3,7 +3,6 @@ import { MAC_UA, withUserAgent } from "./utils/userAgent";
 import { render } from "@testing-library/react";
 import { HotkeyHarness } from "./utils/hotkeyRenderer";
 import userEvent from "@testing-library/user-event";
-
 import { tests } from "./useHotkey.tests";
 
 const RH = await withUserAgent(MAC_UA);

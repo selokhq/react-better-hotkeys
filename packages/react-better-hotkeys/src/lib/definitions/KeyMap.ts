@@ -560,8 +560,4 @@ export const KeyMap: Record<PrimaryKeyCode, KeyDescription<"code">> &
     on: "key",
     value: "/",
   },
-  KeySpace: {
-    on: "key",
-    value: " ",
-  },
 };

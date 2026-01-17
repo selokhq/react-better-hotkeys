@@ -4,7 +4,9 @@ import type { HotKeyDefChordBase } from "react-better-hotkeys/types/hotkey/HotKe
 import type { HotKeyDefSequenceBase } from "react-better-hotkeys/types/hotkey/HotKeyDefSequenceBase";
 import type { HotKeyChordDef } from "react-better-hotkeys/types/hotkey/HotKeyChordDef";
 import type { HotKeySequenceDef } from "react-better-hotkeys/types/hotkey/HotKeySequenceDef";
-import type { ReactNode } from "react";
+import type { PropsWithChildren } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
+import type { HotkeyProviderProps } from "../../../dist/types/hotkey/provider/HotkeyProviderProps";
 export type ReactHotkeys = typeof _lib;
 
 type ChordIn = HotKeyDefChordBase;
@@ -34,6 +36,9 @@ type HotkeyHarnessProps<T extends HotkeyInput> = {
   options?: Parameters<UseHotkeyFn>[3];
   hotkey: T;
   out?: (hotkeys: HotkeyOut<T>) => void;
+  providerProps?: HotkeyProviderProps;
+  onRender?: (n: number) => void;
+  childrenWrapper?: (hotkeys: HotkeyOut<T>) => ReactNode;
 };
 
 function Wrapper<const T extends HotkeyInput>({
@@ -43,6 +48,7 @@ function Wrapper<const T extends HotkeyInput>({
   dependencies,
   options,
   out,
+  childrenWrapper,
 }: HotkeyHarnessProps<T>) {
   const { useHotkey } = RH;
 
@@ -52,19 +58,40 @@ function Wrapper<const T extends HotkeyInput>({
     dependencies,
     options,
   ) as HotkeyOut<T>;
-  out?.(res);
 
-  return <></>;
+  useEffect(() => {
+    out?.(res);
+  }, [out, res]);
+
+  return <>{childrenWrapper?.(res)}</>;
 }
 
-export function HotkeyHarness<const T extends HotkeyInput>(
-  props: HotkeyHarnessProps<T>,
-): ReactNode {
+function WithRenderCount({
+  children,
+  onRender,
+}: PropsWithChildren<{
+  onRender?: (n: number) => void;
+}>) {
+  const count = useRef(0);
+  // eslint-disable-next-line react-hooks/refs
+  count.current += 1;
+  // eslint-disable-next-line react-hooks/refs
+  onRender?.(count.current);
+  return <>{children}</>;
+}
+
+export function HotkeyHarness<const T extends HotkeyInput>({
+  providerProps,
+  onRender,
+  ...props
+}: HotkeyHarnessProps<T>): ReactNode {
   const { HotkeyProvider } = props.RH;
 
   return (
-    <HotkeyProvider>
-      <Wrapper {...props} />
+    <HotkeyProvider {...providerProps}>
+      <WithRenderCount onRender={onRender}>
+        <Wrapper {...props} />
+      </WithRenderCount>
     </HotkeyProvider>
   );
 }

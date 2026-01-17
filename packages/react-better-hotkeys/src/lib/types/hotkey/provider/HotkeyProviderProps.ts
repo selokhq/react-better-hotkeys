@@ -1,3 +1,5 @@
+import type { PrimaryKeyCode } from "../../key/PrimaryKeyCode";
+
 /**
  * All options regarding an entire hotkey scope
  */
@@ -12,4 +14,20 @@ export type HotkeyProviderProps = {
    * @default 100
    */
   chordTimeout?: number;
+  /**
+   * Defines what string will be used in stringified sequence hotkeys
+   * @default ">"
+   */
+  sequenceDelimiter?: string;
+  /**
+   * Defines what string will be used in stringified chord hotkeys
+   * @default "+"
+   */
+  chordDelimiter?: string;
+
+  /**
+   * Defines custom key code mappings for text representation of hotkey for alternative keyboard layouts. (e.g. German: KeyY -> Z)
+   * @default undefined
+   */
+  customSymbolMap?: Partial<Record<PrimaryKeyCode, string>>;
 };
