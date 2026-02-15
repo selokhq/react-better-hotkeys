@@ -18,9 +18,9 @@ describe("useRenderedHotkey", () => {
     const user = userEvent.setup({ keyboardMap: germanKeyMap });
 
     const RenderExample = (hotkeys: HotKeySequenceDef) => {
-      const { string } = useRenderedHotkey(hotkeys);
+      const { asString } = useRenderedHotkey(hotkeys);
       renderCounter++;
-      return <p id="rendered-hotkey">{string}</p>;
+      return <p id="rendered-hotkey">{asString}</p>;
     };
 
     render(
@@ -47,6 +47,44 @@ describe("useRenderedHotkey", () => {
     await user.keyboard("Y");
     expect(renderCounter).toBe(3);
     expect(p.textContent).toBe("Z>Y");
+
+    expect(wrapperRenderCounter).toBeCalledTimes(1);
+  });
+  it("does not trigger a subscriber callback if no changes were made to the internal mapping", async () => {
+    const callback = vi.fn();
+    const wrapperRenderCounter = vi.fn();
+    let renderCounter = 0;
+
+    const user = userEvent.setup({ keyboardMap: germanKeyMap });
+
+    const RenderExample = (hotkeys: HotKeySequenceDef) => {
+      const { asString } = useRenderedHotkey(hotkeys);
+      renderCounter++;
+      return <p id="rendered-hotkey">{asString}</p>;
+    };
+
+    render(
+      <HotkeyHarness
+        RH={RH}
+        hotkey={Hotkey.Sequence.A.B.C.end}
+        callback={callback}
+        childrenWrapper={(v) => RenderExample(v)}
+        onRender={wrapperRenderCounter}
+      />,
+    );
+
+    const p = document.getElementById(
+      "rendered-hotkey",
+    ) as HTMLParagraphElement;
+
+    expect(renderCounter).toBe(1);
+    expect(p.textContent).toBe("A>B>C");
+    await user.keyboard("a");
+    expect(renderCounter).toBe(1);
+    await user.keyboard("b");
+    expect(renderCounter).toBe(1);
+    await user.keyboard("c");
+    expect(renderCounter).toBe(1);
 
     expect(wrapperRenderCounter).toBeCalledTimes(1);
   });
