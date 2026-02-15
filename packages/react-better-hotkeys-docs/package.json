@@ -10,7 +10,6 @@
   "scripts": {
     "compile": "tsc -b --noEmit",
     "lint": "eslint . --fix",
-    "docusaurus": "docusaurus",
     "start": "docusaurus start",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
