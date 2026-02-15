@@ -1,33 +1,22 @@
 import type * as _lib from "react-better-hotkeys";
 import type { UseHotkeyFn } from "react-better-hotkeys/types/hotkey/UseHotkeyFn";
-import type { HotKeyDefChordBase } from "react-better-hotkeys/types/hotkey/HotKeyDefChordBase";
-import type { HotKeyDefSequenceBase } from "react-better-hotkeys/types/hotkey/HotKeyDefSequenceBase";
-import type { HotKeyChordDef } from "react-better-hotkeys/types/hotkey/HotKeyChordDef";
-import type { HotKeySequenceDef } from "react-better-hotkeys/types/hotkey/HotKeySequenceDef";
 import type { PropsWithChildren } from "react";
 import { useEffect, useRef, type ReactNode } from "react";
 import type { HotkeyProviderProps } from "../../../dist/types/hotkey/provider/HotkeyProviderProps";
+import type { ChordHotkeySpec } from "../../../dist/types/hotkey/definition/ChordHotkeySpec";
+import type { ChordHotkey } from "../../../dist/types/hotkey/definition/ChordHotkey";
+import type { SequenceHotkey } from "../../../dist/types/hotkey/definition/SequenceHotkey";
+import type { HotkeySpec } from "../../../dist/types/hotkey/definition/HotkeySpec";
+import type { Hotkey } from "../../../dist/types/hotkey/definition/Hotkey";
 export type ReactHotkeys = typeof _lib;
 
-type ChordIn = HotKeyDefChordBase;
-type SequenceIn = HotKeyDefSequenceBase;
-type ChordOut = HotKeyChordDef;
-type SequenceOut = HotKeySequenceDef;
+type HotkeyInput = HotkeySpec | HotkeySpec[];
 
-type SwapAB<T extends readonly (ChordIn | SequenceIn)[]> = {
-  [K in keyof T]: T[K] extends ChordIn ? ChordOut : SequenceOut;
-};
-
-type HotkeyInput = ChordIn | SequenceIn | readonly (ChordIn | SequenceIn)[];
-
-type HotkeyOut<T extends HotkeyInput> = T extends readonly (
-  | ChordIn
-  | SequenceIn
-)[]
-  ? SwapAB<T>
-  : T extends ChordIn
-    ? ChordOut
-    : SequenceOut;
+type HotkeyOut<T extends HotkeyInput> = T extends readonly HotkeySpec[]
+  ? Hotkey[]
+  : T extends ChordHotkeySpec
+    ? ChordHotkey
+    : SequenceHotkey;
 
 type HotkeyHarnessProps<T extends HotkeyInput> = {
   RH: ReactHotkeys;

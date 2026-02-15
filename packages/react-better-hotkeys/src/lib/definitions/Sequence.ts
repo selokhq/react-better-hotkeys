@@ -1,4 +1,4 @@
-import type { HotKeyDefSequenceBase } from "../types/hotkey/HotKeyDefSequenceBase";
+import type { SequenceHotkeySpec } from "../types/hotkey/definition/SequenceHotkeySpec";
 import type { SequenceNode } from "../types/hotkey/sequence/SequenceNode";
 import type { PrimaryKey } from "../types/key/PrimaryKey";
 
@@ -13,7 +13,7 @@ export const createHotkeySequenceBuilder = (
           return undefined;
         }
         if (prop === "end") {
-          const def: HotKeyDefSequenceBase = {
+          const def: SequenceHotkeySpec = {
             type: "sequence",
             keys: mods,
           };

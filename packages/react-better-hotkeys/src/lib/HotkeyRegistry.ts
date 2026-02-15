@@ -1,8 +1,8 @@
 import { KeyMap } from "./definitions/KeyMap";
 import type { HotkeyTextResolver } from "./HotkeyTextResolver";
 import type { IncompleteHotkey } from "./types/hotkey/chord/IncompleteChordHotkey";
-import type { HotKeyChordDef } from "./types/hotkey/HotKeyChordDef";
-import type { HotKeySequenceDef } from "./types/hotkey/HotKeySequenceDef";
+import type { ChordHotkey } from "./types/hotkey/definition/ChordHotkey";
+import type { SequenceHotkey } from "./types/hotkey/definition/SequenceHotkey";
 import type { SequenceTree } from "./types/hotkey/sequence/SequenceTree";
 import type { KeyDescription } from "./types/key/KeyDescription";
 import type { KeyValueType } from "./types/key/KeyValueType";
@@ -17,11 +17,11 @@ export class HotkeyRegistry {
   chordTimeout: number;
 
   // hotkeyId -> HotKeyChordDef
-  chords: Record<string, HotKeyChordDef> = {};
+  chords: Record<string, ChordHotkey> = {};
   // Event key/code -> HotKeyChordDef[]
-  chordMap: Partial<Record<string, HotKeyChordDef[]>> = {};
+  chordMap: Partial<Record<string, ChordHotkey[]>> = {};
 
-  sequence: Record<string, HotKeySequenceDef> = {};
+  sequence: Record<string, SequenceHotkey> = {};
   sequenceTree: SequenceTree | undefined;
 
   // hotkeyId -> IncompleteHotkey
@@ -41,14 +41,14 @@ export class HotkeyRegistry {
     this.textResolver = textResolver;
   }
 
-  public addChordHotkey(hotkey: HotKeyChordDef) {
+  public addChordHotkey(hotkey: ChordHotkey) {
     this.chords[hotkey.id] = hotkey;
     const hks = this.chordMap[hotkey.primaryValue];
     if (hks == null) this.chordMap[hotkey.primaryValue] = [hotkey];
     else hks.push(hotkey);
   }
 
-  public addSequenceHotkey(hotkey: HotKeySequenceDef) {
+  public addSequenceHotkey(hotkey: SequenceHotkey) {
     this.sequence[hotkey.id] = hotkey;
 
     if (this.sequenceTree == null)
@@ -178,7 +178,7 @@ export class HotkeyRegistry {
     }
   }
 
-  handleChordHotkeyPressSuccess(chord: HotKeyChordDef, event: KeyboardEvent) {
+  handleChordHotkeyPressSuccess(chord: ChordHotkey, event: KeyboardEvent) {
     if (
       isEditingKeystrokeContext(event) &&
       !chord.options.enableOnContentEditable

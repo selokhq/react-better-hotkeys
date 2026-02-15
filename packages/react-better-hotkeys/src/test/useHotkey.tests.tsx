@@ -5,8 +5,8 @@ import type { ReactHotkeys } from "./utils/hotkeyRenderer";
 import { HotkeyHarness } from "./utils/hotkeyRenderer";
 import userEvent from "@testing-library/user-event";
 import { germanKeyMap } from "./keyboard/german";
-import type { HotKeySequenceDef } from "../../dist/types/hotkey/HotKeySequenceDef";
-import type { HotKeyChordDef } from "../../dist/types/hotkey/HotKeyChordDef";
+import type { SequenceHotkey } from "../../dist/types/hotkey/definition/SequenceHotkey";
+import type { ChordHotkey } from "../../dist/types/hotkey/definition/ChordHotkey";
 
 export type Test = {
   name: string;
@@ -383,13 +383,13 @@ export const tests: Test[] = [
     fn: (RH) => async () => {
       const { Hotkey } = RH;
       const callback = vi.fn();
-      const hotkeyOut = vi.fn<(hotkey: readonly [HotKeySequenceDef]) => void>();
+      const hotkeyOut = vi.fn<(hotkey: SequenceHotkey) => void>();
 
       render(
         <>
           <HotkeyHarness
             RH={RH}
-            hotkey={[Hotkey.Sequence.A.Z.K.Space.end]}
+            hotkey={Hotkey.Sequence.A.Z.K.Space.end}
             callback={callback}
             out={hotkeyOut}
           />
@@ -398,14 +398,13 @@ export const tests: Test[] = [
 
       const [hotkey] = hotkeyOut.mock.calls[0];
       expect(hotkey).toBeDefined();
-      expect(hotkey.length).toBe(1);
-      expect(hotkey[0].toParts()[0]).toStrictEqual([
+      expect(hotkey.toParts()[0]).toStrictEqual([
         ["A", "valid"],
         ["Z", "valid"],
         ["K", "valid"],
         ["Space", "valid"],
       ]);
-      expect(hotkey[0].toString()).toEqual("A>Z>K>Space");
+      expect(hotkey.toString()).toEqual("A>Z>K>Space");
     },
   },
   {
@@ -413,7 +412,7 @@ export const tests: Test[] = [
     fn: (RH) => async () => {
       const { Hotkey } = RH;
       const callback = vi.fn();
-      const hotkeyOut = vi.fn<(hotkey: readonly [HotKeySequenceDef]) => void>();
+      const hotkeyOut = vi.fn<(hotkey: SequenceHotkey) => void>();
 
       const user = userEvent.setup({
         keyboardMap: germanKeyMap,
@@ -422,7 +421,7 @@ export const tests: Test[] = [
       render(
         <HotkeyHarness
           RH={RH}
-          hotkey={[Hotkey.Sequence.Y.Z.end]}
+          hotkey={Hotkey.Sequence.Y.Z.end}
           callback={callback}
           out={hotkeyOut}
         />,
@@ -433,13 +432,12 @@ export const tests: Test[] = [
       await waitFor(() => expect(hotkeyOut).toHaveBeenCalled());
       const [hotkey] = hotkeyOut.mock.calls[0];
       expect(hotkey).toBeDefined();
-      expect(hotkey.length).toBe(1);
-      expect(hotkey[0].toParts()[0]).toStrictEqual([
+      expect(hotkey.toParts()[0]).toStrictEqual([
         ["Z", "valid"],
         ["Y", "valid"],
       ]);
 
-      expect(hotkey[0].toString()).toStrictEqual("Z>Y");
+      expect(hotkey.toString()).toStrictEqual("Z>Y");
     },
   },
   {
@@ -447,7 +445,7 @@ export const tests: Test[] = [
     fn: (RH) => async () => {
       const { Hotkey } = RH;
       const callback = vi.fn();
-      const hotkeyOut = vi.fn<(hotkey: readonly [HotKeySequenceDef]) => void>();
+      const hotkeyOut = vi.fn<(hotkey: SequenceHotkey) => void>();
 
       const user = userEvent.setup({
         keyboardMap: germanKeyMap,
@@ -456,7 +454,7 @@ export const tests: Test[] = [
       render(
         <HotkeyHarness
           RH={RH}
-          hotkey={[Hotkey.Sequence.Z.end]}
+          hotkey={Hotkey.Sequence.Z.end}
           callback={callback}
           out={hotkeyOut}
         />,
@@ -467,9 +465,8 @@ export const tests: Test[] = [
       await waitFor(() => expect(hotkeyOut).toHaveBeenCalled());
       const [hotkey] = hotkeyOut.mock.calls[0];
       expect(hotkey).toBeDefined();
-      expect(hotkey.length).toBe(1);
-      expect(hotkey[0].toParts()[0][0][0]).toStrictEqual("Z");
-      expect(hotkey[0].toString()).toStrictEqual("Z");
+      expect(hotkey.toParts()[0][0][0]).toStrictEqual("Z");
+      expect(hotkey.toString()).toStrictEqual("Z");
     },
   },
   {
@@ -477,7 +474,7 @@ export const tests: Test[] = [
     fn: (RH) => async () => {
       const { Hotkey } = RH;
       const callback = vi.fn();
-      const hotkeyOut = vi.fn<(hotkey: readonly [HotKeySequenceDef]) => void>();
+      const hotkeyOut = vi.fn<(hotkey: SequenceHotkey) => void>();
 
       const user = userEvent.setup({
         keyboardMap: germanKeyMap,
@@ -486,7 +483,7 @@ export const tests: Test[] = [
       render(
         <HotkeyHarness
           RH={RH}
-          hotkey={[Hotkey.Sequence.Z.end]}
+          hotkey={Hotkey.Sequence.Z.end}
           callback={callback}
           out={hotkeyOut}
         />,
@@ -497,13 +494,12 @@ export const tests: Test[] = [
       await waitFor(() => expect(hotkeyOut).toHaveBeenCalled());
       const [hotkey] = hotkeyOut.mock.calls[0];
       expect(hotkey).toBeDefined();
-      expect(hotkey.length).toBe(1);
-      expect(hotkey[0].toParts()[0][0]).toStrictEqual(["Z", "invalid"]);
-      expect(hotkey[0].toString()).toStrictEqual("Z");
+      expect(hotkey.toParts()[0][0]).toStrictEqual(["Z", "invalid"]);
+      expect(hotkey.toString()).toStrictEqual("Z");
 
       await user.keyboard("Y");
-      expect(hotkey[0].toParts()[0][0]).toStrictEqual(["Y", "valid"]);
-      expect(hotkey[0].toString()).toStrictEqual("Y");
+      expect(hotkey.toParts()[0][0]).toStrictEqual(["Y", "valid"]);
+      expect(hotkey.toString()).toStrictEqual("Y");
     },
   },
   {
@@ -511,12 +507,12 @@ export const tests: Test[] = [
     fn: (RH) => async () => {
       const { Hotkey } = RH;
       const callback = vi.fn();
-      const hotkeyOut = vi.fn<(hotkey: readonly [HotKeyChordDef]) => void>();
+      const hotkeyOut = vi.fn<(hotkey: ChordHotkey) => void>();
 
       render(
         <HotkeyHarness
           RH={RH}
-          hotkey={[Hotkey.Chord.A]}
+          hotkey={Hotkey.Chord.A}
           callback={callback}
           out={hotkeyOut}
         />,
@@ -525,9 +521,8 @@ export const tests: Test[] = [
       await waitFor(() => expect(hotkeyOut).toHaveBeenCalled());
       const [hotkey] = hotkeyOut.mock.calls[0];
       expect(hotkey).toBeDefined();
-      expect(hotkey.length).toBe(1);
-      expect(hotkey[0].toParts()[0][0]).toStrictEqual(["A", "valid"]);
-      expect(hotkey[0].toString()).toStrictEqual("A");
+      expect(hotkey.toParts()[0][0]).toStrictEqual(["A", "valid"]);
+      expect(hotkey.toString()).toStrictEqual("A");
     },
   },
   {
@@ -535,12 +530,12 @@ export const tests: Test[] = [
     fn: (RH) => async () => {
       const { Hotkey } = RH;
       const callback = vi.fn();
-      const hotkeyOut = vi.fn<(hotkey: readonly [HotKeyChordDef]) => void>();
+      const hotkeyOut = vi.fn<(hotkey: ChordHotkey) => void>();
 
       render(
         <HotkeyHarness
           RH={RH}
-          hotkey={[Hotkey.Chord.Shift.Meta.A]}
+          hotkey={Hotkey.Chord.Shift.Meta.A}
           callback={callback}
           out={hotkeyOut}
         />,
@@ -549,13 +544,12 @@ export const tests: Test[] = [
       await waitFor(() => expect(hotkeyOut).toHaveBeenCalled());
       const [hotkey] = hotkeyOut.mock.calls[0];
       expect(hotkey).toBeDefined();
-      expect(hotkey.length).toBe(1);
-      expect(hotkey[0].toParts()[0]).toStrictEqual([
+      expect(hotkey.toParts()[0]).toStrictEqual([
         ["Shift", "valid"],
         ["Meta", "valid"],
         ["A", "valid"],
       ]);
-      expect(hotkey[0].toString()).toStrictEqual("Shift+Meta+A");
+      expect(hotkey.toString()).toStrictEqual("Shift+Meta+A");
     },
   },
   {
@@ -563,12 +557,12 @@ export const tests: Test[] = [
     fn: (RH) => async () => {
       const { Hotkey } = RH;
       const callback = vi.fn();
-      const hotkeyOut = vi.fn<(hotkey: readonly [HotKeyChordDef]) => void>();
+      const hotkeyOut = vi.fn<(hotkey: ChordHotkey) => void>();
 
       render(
         <HotkeyHarness
           RH={RH}
-          hotkey={[Hotkey.Chord.Shift.Meta.A]}
+          hotkey={Hotkey.Chord.Shift.Meta.A}
           callback={callback}
           out={hotkeyOut}
           providerProps={{
@@ -580,13 +574,12 @@ export const tests: Test[] = [
       await waitFor(() => expect(hotkeyOut).toHaveBeenCalled());
       const [hotkey] = hotkeyOut.mock.calls[0];
       expect(hotkey).toBeDefined();
-      expect(hotkey.length).toBe(1);
-      expect(hotkey[0].toParts()[0]).toStrictEqual([
+      expect(hotkey.toParts()[0]).toStrictEqual([
         ["Shift", "valid"],
         ["Meta", "valid"],
         ["A", "valid"],
       ]);
-      expect(hotkey[0].toString()).toStrictEqual("Shift and Meta and A");
+      expect(hotkey.toString()).toStrictEqual("Shift and Meta and A");
     },
   },
   {
@@ -594,12 +587,12 @@ export const tests: Test[] = [
     fn: (RH) => async () => {
       const { Hotkey } = RH;
       const callback = vi.fn();
-      const hotkeyOut = vi.fn<(hotkey: readonly [HotKeyChordDef]) => void>();
+      const hotkeyOut = vi.fn<(hotkey: ChordHotkey) => void>();
 
       render(
         <HotkeyHarness
           RH={RH}
-          hotkey={[Hotkey.Chord.Shift.Meta.A]}
+          hotkey={Hotkey.Chord.Shift.Meta.A}
           callback={callback}
           out={hotkeyOut}
           providerProps={{
@@ -611,13 +604,12 @@ export const tests: Test[] = [
       await waitFor(() => expect(hotkeyOut).toHaveBeenCalled());
       const [hotkey] = hotkeyOut.mock.calls[0];
       expect(hotkey).toBeDefined();
-      expect(hotkey.length).toBe(1);
-      expect(hotkey[0].toParts()[0]).toStrictEqual([
+      expect(hotkey.toParts()[0]).toStrictEqual([
         ["Shift", "valid"],
         ["Meta", "valid"],
         ["A", "valid"],
       ]);
-      expect(hotkey[0].toString()).toStrictEqual("Shift and Meta and A");
+      expect(hotkey.toString()).toStrictEqual("Shift and Meta and A");
     },
   },
 ];

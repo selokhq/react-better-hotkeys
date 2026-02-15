@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import type { HotKeyDef } from "../types/hotkey/HotKeyDef";
+import type { Hotkey } from "../types/hotkey/definition/Hotkey";
 import { HotkeyContext } from "../context/HotkeyContext";
 import { toPrimaryKeyCode } from "../util/toPrimaryKeyCode";
 import type { HotkeyTextParts } from "../types/hotkey/HotkeyTextParts";
 
-export function useRenderedHotkey(hotkey: HotKeyDef) {
+export function useRenderedHotkey(hotkey: Hotkey) {
   const cxt = useContext(HotkeyContext);
 
   const [rendered, setRendered] = useState<{

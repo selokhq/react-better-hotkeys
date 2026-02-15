@@ -6,7 +6,7 @@ import type { ChordNode } from "../types/hotkey/chord/ChordNode";
 import type { ModifierKeyCode } from "../types/key/ModifierKeyCode";
 import type { PrimaryKeyCode } from "../types/key/PrimaryKeyCode";
 import type { PrimaryKeyValue } from "../types/key/PrimaryKeyValue";
-import type { HotKeyDefChordBase } from "../types/hotkey/HotKeyDefChordBase";
+import type { ChordHotkeySpec } from "../types/hotkey/definition/ChordHotkeySpec";
 import type { PrimaryKey } from "../types/key/PrimaryKey";
 
 export const createHotkeyChordBuilder = (
@@ -34,7 +34,7 @@ export const createHotkeyChordBuilder = (
             } else modifier[m] = true;
           });
 
-          const def: HotKeyDefChordBase = {
+          const def: ChordHotkeySpec = {
             type: "chord",
             modifier: modifier,
             keyId: keyId,

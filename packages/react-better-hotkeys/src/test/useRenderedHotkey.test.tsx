@@ -3,8 +3,8 @@ import { MAC_UA, withUserAgent } from "./utils/userAgent";
 import { render } from "@testing-library/react";
 import { HotkeyHarness } from "./utils/hotkeyRenderer";
 import userEvent from "@testing-library/user-event";
-import type { HotKeySequenceDef } from "../../dist/types/hotkey/HotKeySequenceDef";
 import { germanKeyMap } from "./keyboard/german";
+import type { SequenceHotkey } from "../../dist/types/hotkey/definition/SequenceHotkey";
 
 const RH = await withUserAgent(MAC_UA);
 const { Hotkey, useRenderedHotkey } = RH;
@@ -17,7 +17,7 @@ describe("useRenderedHotkey", () => {
 
     const user = userEvent.setup({ keyboardMap: germanKeyMap });
 
-    const RenderExample = (hotkeys: HotKeySequenceDef) => {
+    const RenderExample = (hotkeys: SequenceHotkey) => {
       const { asString } = useRenderedHotkey(hotkeys);
       renderCounter++;
       return <p id="rendered-hotkey">{asString}</p>;
@@ -57,7 +57,7 @@ describe("useRenderedHotkey", () => {
 
     const user = userEvent.setup({ keyboardMap: germanKeyMap });
 
-    const RenderExample = (hotkeys: HotKeySequenceDef) => {
+    const RenderExample = (hotkeys: SequenceHotkey) => {
       const { asString } = useRenderedHotkey(hotkeys);
       renderCounter++;
       return <p id="rendered-hotkey">{asString}</p>;

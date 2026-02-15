@@ -1,7 +1,7 @@
-import type { HotKeyDefChordBase } from "../types/hotkey/HotKeyDefChordBase";
-import type { HotKeyDefSequenceBase } from "../types/hotkey/HotKeyDefSequenceBase";
-import type { HotKeyChordDef } from "../types/hotkey/HotKeyChordDef";
-import type { HotKeySequenceDef } from "../types/hotkey/HotKeySequenceDef";
+import type { ChordHotkeySpec } from "../types/hotkey/definition/ChordHotkeySpec";
+import type { SequenceHotkeySpec } from "../types/hotkey/definition/SequenceHotkeySpec";
+import type { ChordHotkey } from "../types/hotkey/definition/ChordHotkey";
+import type { SequenceHotkey } from "../types/hotkey/definition/SequenceHotkey";
 import type { HotkeyCallback } from "../types/hotkey/HotkeyCallback";
 import type { HotkeyOptions } from "../types/hotkey/HotkeyOptions";
 import {
@@ -18,42 +18,35 @@ import { KeyMap } from "../definitions/KeyMap";
 import type { PrimaryKey } from "../types/key/PrimaryKey";
 import { isPrimaryKeyCode } from "../util/isPrimaryKeyCode";
 import type { ResolvedKeyStatus } from "../types/hotkey/renderer/ResolvedKeyStatus";
-
-type ChordIn = HotKeyDefChordBase;
-type SequenceIn = HotKeyDefSequenceBase;
-type ChordOut = HotKeyChordDef;
-type SequenceOut = HotKeySequenceDef;
+import type { HotkeySpec } from "../types/hotkey/definition/HotkeySpec";
+import type { Hotkey } from "../types/hotkey/definition/Hotkey";
 
 const useSafeLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
-type HotkeyMapping<T extends readonly (ChordIn | SequenceIn)[]> = {
-  [K in keyof T]: T[K] extends ChordIn ? ChordOut : SequenceOut;
-};
-function isHotkeyArray<const T extends readonly (ChordIn | SequenceIn)[]>(
-  value: ChordIn | SequenceIn | T,
-): value is T {
-  return Array.isArray(value);
-}
+export function useHotkey(
+  hotkey: HotkeySpec[],
+  callback: HotkeyCallback,
+  options?: Partial<HotkeyOptions>,
+): Hotkey[];
+export function useHotkey(
+  hotkey: ChordHotkeySpec,
+  callback: HotkeyCallback,
+  options?: Partial<HotkeyOptions>,
+): ChordHotkey;
+export function useHotkey(
+  hotkey: SequenceHotkeySpec,
+  callback: HotkeyCallback,
+  options?: Partial<HotkeyOptions>,
+): SequenceHotkey;
+export function useHotkey(
+  hotkey: HotkeySpec,
+  callback: HotkeyCallback,
+  options?: Partial<HotkeyOptions>,
+): Hotkey;
 
 export function useHotkey(
-  hotkey: ChordIn,
-  callback: HotkeyCallback,
-  options?: Partial<HotkeyOptions>,
-): ChordOut;
-export function useHotkey(
-  hotkey: SequenceIn,
-  callback: HotkeyCallback,
-  options?: Partial<HotkeyOptions>,
-): SequenceOut;
-export function useHotkey<const T extends readonly (ChordIn | SequenceIn)[]>(
-  hotkey: T,
-  callback: HotkeyCallback,
-  options?: Partial<HotkeyOptions>,
-): HotkeyMapping<typeof hotkey>;
-
-export function useHotkey<const T extends readonly (ChordIn | SequenceIn)[]>(
-  hotkey: ChordIn | SequenceIn | T,
+  hotkey: HotkeySpec | HotkeySpec[],
   callback: HotkeyCallback,
   options?: Partial<HotkeyOptions>,
 ) {
@@ -88,9 +81,9 @@ export function useHotkey<const T extends readonly (ChordIn | SequenceIn)[]>(
     [hotkeyContext?.textResolver],
   );
 
-  const createSequenceOut = useCallback(
-    (hk: SequenceIn, index?: number) => {
-      const hotkey: SequenceOut = {
+  const createSequenceHotkey = useCallback(
+    (hk: SequenceHotkeySpec, index?: number) => {
+      const hotkey: SequenceHotkey = {
         ...hk,
         options: _options,
         id: index == null ? id : `${id}-${index}`,
@@ -110,9 +103,9 @@ export function useHotkey<const T extends readonly (ChordIn | SequenceIn)[]>(
     [_options, hotkeyContext?.textResolver, id, resolveKey],
   );
 
-  const createChordOut = useCallback(
-    (hk: ChordIn, index?: number) => {
-      const hotkey: ChordOut = {
+  const createChordHotkey = useCallback(
+    (hk: ChordHotkeySpec, index?: number) => {
+      const hotkey: ChordHotkey = {
         ...hk,
         options: _options,
         id: index == null ? id : `${id}-${index}`,
@@ -135,20 +128,20 @@ export function useHotkey<const T extends readonly (ChordIn | SequenceIn)[]>(
     [_options, hotkeyContext?.textResolver, id, resolveKey],
   );
 
-  const entries = useMemo<HotkeyMapping<T> | ChordOut | SequenceOut>(() => {
-    if (isHotkeyArray(hotkey)) {
+  const entries = useMemo<Hotkey | Hotkey[]>(() => {
+    if (Array.isArray(hotkey)) {
       return hotkey.map((hk, i) => {
         if (hk.type === "chord") {
-          return createChordOut(hk, i);
+          return createChordHotkey(hk, i);
         } else {
-          return createSequenceOut(hk, i);
+          return createSequenceHotkey(hk, i);
         }
-      }) as HotkeyMapping<typeof hotkey>;
+      });
     } else {
-      if (hotkey.type === "chord") return createChordOut(hotkey);
-      return createSequenceOut(hotkey);
+      if (hotkey.type === "chord") return createChordHotkey(hotkey);
+      return createSequenceHotkey(hotkey);
     }
-  }, [createChordOut, createSequenceOut, hotkey]); // TODO: this will trigger on every render, right?
+  }, [createChordHotkey, createSequenceHotkey, hotkey]); // TODO: this will trigger on every render, right?
 
   useSafeLayoutEffect(() => {
     if (hotkeyContext == null) {

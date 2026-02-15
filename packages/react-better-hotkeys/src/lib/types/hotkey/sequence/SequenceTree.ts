@@ -1,7 +1,7 @@
-import type { HotKeySequenceDef } from "../HotKeySequenceDef";
+import type { SequenceHotkey } from "../definition/SequenceHotkey";
 
 export type SequenceTree = {
-  hotkey: HotKeySequenceDef[];
+  hotkey: SequenceHotkey[];
   keyBased: Partial<{
     [key in string]: SequenceTree;
   }>;

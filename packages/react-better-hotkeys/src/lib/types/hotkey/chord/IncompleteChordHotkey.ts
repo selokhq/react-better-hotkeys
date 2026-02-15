@@ -1,6 +1,6 @@
-import type { HotKeyChordDef } from "../HotKeyChordDef";
+import type { ChordHotkey } from "../definition/ChordHotkey";
 
 export type IncompleteHotkey = {
-  hotkey: HotKeyChordDef;
+  hotkey: ChordHotkey;
   timeoutId: number;
 };

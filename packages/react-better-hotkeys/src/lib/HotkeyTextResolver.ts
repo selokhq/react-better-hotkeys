@@ -1,5 +1,5 @@
 import { KeyMap } from "./definitions/KeyMap";
-import type { HotKeyDef } from "./types/hotkey/HotKeyDef";
+import type { Hotkey } from "./types/hotkey/definition/Hotkey";
 import type { HotKeyType } from "./types/hotkey/HotkeyType";
 import type { ResolvedKeyStatus } from "./types/hotkey/renderer/ResolvedKeyStatus";
 import type { PrimaryKeyCode } from "./types/key/PrimaryKeyCode";
@@ -188,7 +188,7 @@ export class HotkeyTextResolver {
     return this.sequnceDelimiter;
   }
 
-  public toString(hotkey: HotKeyDef): string {
+  public toString(hotkey: Hotkey): string {
     const parts = hotkey.toParts();
     return parts[0].map((p) => p[0]).join(parts[1]);
   }

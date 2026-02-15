@@ -1,7 +1,7 @@
-import type { HotKeyChordDef } from "../types/hotkey/HotKeyChordDef";
+import type { ChordHotkey } from "../types/hotkey/definition/ChordHotkey";
 
 export function checkModifierPressed(
-  chord: HotKeyChordDef,
+  chord: ChordHotkey,
   event: KeyboardEvent,
 ): boolean {
   return (
