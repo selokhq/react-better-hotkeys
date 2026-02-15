@@ -32,8 +32,7 @@ type HotkeyOut<T extends HotkeyInput> = T extends readonly (
 type HotkeyHarnessProps<T extends HotkeyInput> = {
   RH: ReactHotkeys;
   callback: Parameters<UseHotkeyFn>[1];
-  dependencies?: Parameters<UseHotkeyFn>[2];
-  options?: Parameters<UseHotkeyFn>[3];
+  options?: Parameters<UseHotkeyFn>[2];
   hotkey: T;
   out?: (hotkeys: HotkeyOut<T>) => void;
   providerProps?: HotkeyProviderProps;
@@ -45,7 +44,6 @@ function Wrapper<const T extends HotkeyInput>({
   RH,
   hotkey,
   callback,
-  dependencies,
   options,
   out,
   childrenWrapper,
@@ -55,7 +53,6 @@ function Wrapper<const T extends HotkeyInput>({
   const res = useHotkey(
     hotkey as Parameters<UseHotkeyFn>[0],
     callback,
-    dependencies,
     options,
   ) as HotkeyOut<T>;
 

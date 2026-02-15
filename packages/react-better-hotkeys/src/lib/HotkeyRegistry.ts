@@ -130,7 +130,7 @@ export class HotkeyRegistry {
         Object.keys(sequenceNodeCodeBased.keyBased).length === 0
       ) {
         sequenceNodeCodeBased.hotkey.forEach((hk) => {
-          if (!hk.options.disabled) hk.callback(event);
+          if (!hk.options.disabled) hk.callbackRef.current(event);
         });
         this.waitingSequenceNodes = {};
       } else {
@@ -148,7 +148,7 @@ export class HotkeyRegistry {
         Object.keys(sequenceNodeKeyBased.keyBased).length === 0
       ) {
         sequenceNodeKeyBased.hotkey.forEach((hk) => {
-          if (!hk.options.disabled) hk.callback(event);
+          if (!hk.options.disabled) hk.callbackRef.current(event);
         });
         this.waitingSequenceNodes = {};
       } else {
@@ -186,7 +186,7 @@ export class HotkeyRegistry {
       return;
     }
     if (chord.options.preventDefault) event.preventDefault();
-    chord.callback(event);
+    chord.callbackRef.current(event);
 
     // clear partial sequence hotkeys
     this.waitingSequenceNodes = {};

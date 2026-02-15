@@ -10,7 +10,6 @@ function Comp() {
     () => {
       setCounter((prev) => prev + 1);
     },
-    [],
     {
       preventDefault: false,
     },

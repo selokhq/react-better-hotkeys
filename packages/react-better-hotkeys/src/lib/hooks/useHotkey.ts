@@ -11,6 +11,7 @@ import {
   useId,
   useLayoutEffect,
   useMemo,
+  useRef,
 } from "react";
 import { HotkeyContext } from "../context/HotkeyContext";
 import { KeyMap } from "../definitions/KeyMap";
@@ -38,30 +39,32 @@ function isHotkeyArray<const T extends readonly (ChordIn | SequenceIn)[]>(
 export function useHotkey(
   hotkey: ChordIn,
   callback: HotkeyCallback,
-  dependencies?: unknown[],
   options?: Partial<HotkeyOptions>,
 ): ChordOut;
 export function useHotkey(
   hotkey: SequenceIn,
   callback: HotkeyCallback,
-  dependencies?: unknown[],
   options?: Partial<HotkeyOptions>,
 ): SequenceOut;
 export function useHotkey<const T extends readonly (ChordIn | SequenceIn)[]>(
   hotkey: T,
   callback: HotkeyCallback,
-  dependencies?: unknown[],
   options?: Partial<HotkeyOptions>,
 ): HotkeyMapping<typeof hotkey>;
 
 export function useHotkey<const T extends readonly (ChordIn | SequenceIn)[]>(
   hotkey: ChordIn | SequenceIn | T,
   callback: HotkeyCallback,
-  dependencies?: unknown[],
   options?: Partial<HotkeyOptions>,
 ) {
   const hotkeyContext = useContext(HotkeyContext);
   const id = useId();
+
+  const callbackRef = useRef(callback);
+
+  useEffect(() => {
+    callbackRef.current = callback;
+  }, [callback]);
 
   const _options: HotkeyOptions = useMemo(
     () => ({
@@ -91,7 +94,7 @@ export function useHotkey<const T extends readonly (ChordIn | SequenceIn)[]>(
         ...hk,
         options: _options,
         id: index == null ? id : `${id}-${index}`,
-        callback,
+        callbackRef,
         toParts: () => [
           hk.keys.map((k) => {
             return resolveKey(k);
@@ -104,7 +107,7 @@ export function useHotkey<const T extends readonly (ChordIn | SequenceIn)[]>(
       };
       return hotkey;
     },
-    [_options, callback, hotkeyContext?.textResolver, id, resolveKey],
+    [_options, hotkeyContext?.textResolver, id, resolveKey],
   );
 
   const createChordOut = useCallback(
@@ -113,7 +116,7 @@ export function useHotkey<const T extends readonly (ChordIn | SequenceIn)[]>(
         ...hk,
         options: _options,
         id: index == null ? id : `${id}-${index}`,
-        callback,
+        callbackRef,
         toParts: () => [
           [
             ...Object.entries(hk.modifier)
@@ -129,7 +132,7 @@ export function useHotkey<const T extends readonly (ChordIn | SequenceIn)[]>(
       };
       return hotkey;
     },
-    [_options, callback, hotkeyContext?.textResolver, id, resolveKey],
+    [_options, hotkeyContext?.textResolver, id, resolveKey],
   );
 
   const entries = useMemo<HotkeyMapping<T> | ChordOut | SequenceOut>(() => {
@@ -174,7 +177,7 @@ export function useHotkey<const T extends readonly (ChordIn | SequenceIn)[]>(
         }
       });
     };
-  }, [entries, ...(dependencies ? dependencies : [])]);
+  }, [entries]);
 
   return entries;
 }
