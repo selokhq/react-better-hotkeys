@@ -30,23 +30,43 @@ export function useHotkey(
   options?: Partial<HotkeyOptions>,
 ): Hotkey[];
 export function useHotkey(
+  hotkey: HotkeySpec[] | undefined,
+  callback: HotkeyCallback,
+  options?: Partial<HotkeyOptions>,
+): Hotkey[] | undefined;
+export function useHotkey(
   hotkey: ChordHotkeySpec,
   callback: HotkeyCallback,
   options?: Partial<HotkeyOptions>,
 ): ChordHotkey;
+export function useHotkey(
+  hotkey: ChordHotkeySpec | undefined,
+  callback: HotkeyCallback,
+  options?: Partial<HotkeyOptions>,
+): ChordHotkey | undefined;
 export function useHotkey(
   hotkey: SequenceHotkeySpec,
   callback: HotkeyCallback,
   options?: Partial<HotkeyOptions>,
 ): SequenceHotkey;
 export function useHotkey(
+  hotkey: SequenceHotkeySpec | undefined,
+  callback: HotkeyCallback,
+  options?: Partial<HotkeyOptions>,
+): SequenceHotkey | undefined;
+export function useHotkey(
   hotkey: HotkeySpec,
   callback: HotkeyCallback,
   options?: Partial<HotkeyOptions>,
 ): Hotkey;
+export function useHotkey(
+  hotkey: HotkeySpec | undefined,
+  callback: HotkeyCallback,
+  options?: Partial<HotkeyOptions>,
+): Hotkey | undefined;
 
 export function useHotkey(
-  hotkey: HotkeySpec | HotkeySpec[],
+  hotkey: HotkeySpec | HotkeySpec[] | undefined,
   callback: HotkeyCallback,
   options?: Partial<HotkeyOptions>,
 ) {
@@ -129,6 +149,7 @@ export function useHotkey(
   );
 
   const entries = useMemo<Hotkey | Hotkey[]>(() => {
+    if (hotkey == null) return [];
     if (Array.isArray(hotkey)) {
       return hotkey.map((hk, i) => {
         if (hk.type === "chord") {
@@ -172,5 +193,5 @@ export function useHotkey(
     };
   }, [entries]);
 
-  return entries;
+  return hotkey ? entries : undefined;
 }

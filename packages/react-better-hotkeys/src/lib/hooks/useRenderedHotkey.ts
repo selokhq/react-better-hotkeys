@@ -2,21 +2,30 @@ import { useContext, useEffect, useState } from "react";
 import type { Hotkey } from "../types/hotkey/definition/Hotkey";
 import { HotkeyContext } from "../context/HotkeyContext";
 import { toPrimaryKeyCode } from "../util/toPrimaryKeyCode";
-import type { HotkeyTextParts } from "../types/hotkey/HotkeyTextParts";
+import type { RenderedHotkey } from "../types/hotkey/renderer/RenderedHotkey";
 
-export function useRenderedHotkey(hotkey: Hotkey) {
+export function useRenderedHotkey(hotkey: Hotkey): RenderedHotkey;
+
+export function useRenderedHotkey(hotkey: undefined): undefined;
+
+export function useRenderedHotkey(
+  hotkey: Hotkey | undefined,
+): RenderedHotkey | undefined;
+
+export function useRenderedHotkey(hotkey: Hotkey | undefined) {
   const cxt = useContext(HotkeyContext);
 
-  const [rendered, setRendered] = useState<{
-    asString: string;
-    asParts: HotkeyTextParts;
-  }>({
-    asString: hotkey.toString(),
-    asParts: hotkey.toParts(),
-  });
+  const [rendered, setRendered] = useState<RenderedHotkey | undefined>(
+    hotkey
+      ? {
+          asString: hotkey.toString(),
+          asParts: hotkey.toParts(),
+        }
+      : undefined,
+  );
 
   useEffect(() => {
-    if (cxt == null) return;
+    if (cxt == null || hotkey == null) return;
 
     let subscriptions: (() => void)[];
     if (hotkey.type === "chord") {
