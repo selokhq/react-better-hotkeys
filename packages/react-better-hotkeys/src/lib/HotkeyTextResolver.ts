@@ -75,7 +75,7 @@ export class HotkeyTextResolver {
         if (cur[1].on === "code") {
           prev[cur[0]] =
             cur[1].value.length === 1
-              ? cur[1].value.toUpperCase()
+              ? cur[1].value.toLocaleUpperCase()
               : cur[1].value;
         }
         return prev;
@@ -85,7 +85,7 @@ export class HotkeyTextResolver {
           const keyCodeIdentifier = cur[0].slice(3);
           prev[keyCodeIdentifier] =
             cur[1].value.length === 1
-              ? cur[1].value.toUpperCase()
+              ? cur[1].value.toLocaleUpperCase()
               : cur[1].value;
         }
         return prev;

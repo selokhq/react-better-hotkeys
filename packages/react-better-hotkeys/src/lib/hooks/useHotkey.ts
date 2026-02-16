@@ -91,12 +91,14 @@ export function useHotkey(
 
   const resolveKey = useCallback(
     (k: PrimaryKey): [string, ResolvedKeyStatus] => {
-      return isPrimaryKeyCode(k)
+      let v: [string, ResolvedKeyStatus] = isPrimaryKeyCode(k)
         ? (hotkeyContext?.textResolver.resolve(k) ?? [
             KeyMap[`Key${k}` as PrimaryKey].value,
             "unknown",
           ])
         : [KeyMap[k].value, "unknown"];
+      if (v[0].length === 1) v = [v[0].toLocaleUpperCase(), v[1]];
+      return v;
     },
     [hotkeyContext?.textResolver],
   );
