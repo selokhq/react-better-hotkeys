@@ -1,5 +1,4 @@
-React Better Hotkeys
-======================
+# React Better Hotkeys
 
 A tiny, typed helper for registering global hotkeys in React. It supports both **chords** (e.g. `Shift + Alt + A`) and **key sequences** (e.g. `g` then `h`), respects platform-specific modifier keys, and cleans up registrations automatically.
 
